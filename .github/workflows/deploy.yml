@@ -1,0 +1,72 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: physlabs-production
+  cancel-in-progress: true
+
+env:
+  SERVER_HOST: 100.85.250.88
+  SERVER_USER: muradayaghi
+  SERVER_PATH: /var/www/physlabs.org
+
+jobs:
+  deploy:
+    name: Build and deploy static site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          ping: 100.85.250.88
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/physlabs_deploy
+          chmod 600 ~/.ssh/physlabs_deploy
+          ssh-keyscan -T 10 -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy built files
+        run: |
+          command -v rsync >/dev/null || {
+            sudo apt-get update
+            sudo apt-get install -y rsync
+          }
+
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/physlabs_deploy -o IdentitiesOnly=yes" \
+            dist/ "${SERVER_USER}@${SERVER_HOST}:${SERVER_PATH}/dist/"
