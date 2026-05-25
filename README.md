@@ -30,12 +30,13 @@ First-time server setup requires sudo because it creates the Nginx server block:
 sudo bash deploy/server-setup.sh
 ```
 
-After that, GitHub Actions builds and deploys `dist/` on every push to `main`. The workflow expects these repository secrets:
+GitHub Actions runs lint and build checks on every push to `main`.
 
-```text
-TS_OAUTH_CLIENT_ID
-TS_OAUTH_SECRET
-DEPLOY_SSH_PRIVATE_KEY
+Production deploys currently happen over Tailscale SSH from a trusted machine:
+
+```bash
+npm run build
+rsync -az --delete dist/ 100.85.250.88:/var/www/physlabs.org/dist/
 ```
 
 ## DNS
