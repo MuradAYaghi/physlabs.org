@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PhysLabs News">
+  <rect width="64" height="64" rx="12" fill="#0b63f6"/>
+  <path d="M15 18h34M15 30h26M15 42h18" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="47" cy="42" r="5" fill="#fff"/>
+</svg>

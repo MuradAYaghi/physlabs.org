@@ -1,6 +1,7 @@
 # PhysLabs
 
-Blank Vite/React placeholder for [physlabs.org](https://physlabs.org).
+React/Vite landing page for [physlabs.org](https://physlabs.org), currently serving
+the PhysLabs News newsletter landing page.
 
 ## Local Development
 
