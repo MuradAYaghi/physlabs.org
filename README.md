@@ -1,6 +1,6 @@
 # PhysLabs
 
-Static React/Vite website for [physlabs.org](https://physlabs.org).
+Blank Vite/React placeholder for [physlabs.org](https://physlabs.org).
 
 ## Local Development
 
@@ -18,7 +18,7 @@ npm run build
 
 ## Production Deployment
 
-The production server is `100.85.250.88` over Tailscale. The site is designed to deploy to:
+The production server is `100.85.250.88` over Tailscale. The site deploys to:
 
 ```text
 /var/www/physlabs.org
@@ -32,7 +32,7 @@ sudo bash deploy/server-setup.sh
 
 GitHub Actions runs lint and build checks on every push to `main`.
 
-Production deploys currently happen over Tailscale SSH from a trusted machine:
+Manual production deploy:
 
 ```bash
 npm run build
